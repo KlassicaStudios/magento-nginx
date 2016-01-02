@@ -1,6 +1,8 @@
-from ubuntu:12.04
+# Forked from dockerfiles/magento-nginx
+# Updated to Ubutu 14.04, PHP 5.5
+FROM ubuntu-upstart:14.04
 
-MAINTAINER Thatcher Peskens <thatcher@koffiedik.net>
+MAINTAINER Klassica Studios <info@klassica.com>
 
 RUN apt-get update
 
@@ -11,15 +13,8 @@ RUN mkdir /var/www
 # install some convenience tools
 RUN apt-get install -y vim curl rsync mysql-client
 
-# ADD nginx/nginx.conf /etc/nginx/
-# ADD nginx/sites-available/magento /etc/nginx/sites-available/default
-
 # install and configure php-fpm
-RUN apt-get install -y php5-fpm php5-mysql php5-curl php5-mcrypt php5-gd 
-
-# ADD php5/php.ini /etc/php5/fpm/php.ini
-# ADD php5/php-fpm.conf /etc/php5/fpm/php-fpm.conf
-# ADD php5/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf
+RUN apt-get install -y php5-fpm=5.5 php5-mysql php5-curl php5-mcrypt php5-gd 
 
 # install sshd
 RUN apt-get install -y openssh-server
@@ -28,8 +23,6 @@ RUN mkdir /var/run/sshd
 
 # install supervisord
 RUN apt-get install -y supervisor
-## ADD supervisor/conf.d/ /etc/supervisor/conf.d/
-## ADD supervisor/supervisord.conf /etc/supervisor/
 
 # install some convenience tools
 RUN apt-get install -y vim curl rsync mysql-client
@@ -45,9 +38,9 @@ RUN ln -sf /configs/php5/php.ini /etc/php5/fpm/php.ini
 RUN ln -sf /configs/php5/php-fpm.conf /etc/php5/fpm/php-fpm.conf
 RUN ln -sf /configs/php5/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf
 
-
 # install a site
 ADD www /var/www
 
-EXPOSE 22 80 443
+# 8010+ (8410+ SSL) are Klassica Client web service ports
+EXPOSE 22 8010 8410
 CMD bash
